@@ -11,6 +11,5 @@ class BasicTest(unittest.TestCase):
         email = 'email@email.ru'
         data = dict(username='testuser',wallet=100,last_name='last_name',email=email)
         self.client.post('/register/',data)
-        print User.objects.filter(email=email)
         self.assertTrue(User.objects.filter(email=email))
 

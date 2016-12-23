@@ -13,7 +13,10 @@ def register(request):
         if user_form.is_valid() and client_form.is_valid():
             user_form.save()
             client_form.save()
+            messages.success(request, ('Вы успешно зарегестрированы!'))
             return redirect('/')
+        else:
+            messages.error(request, ('Пожалуйста, проверьте правильность данных!'))
     else:
         user_form = UserForm()
         client_form = ClientForm()
