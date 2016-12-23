@@ -1,25 +1,19 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'home.html' %}
 
-{% if messages %}
-<ul class="messages">
-    {% for message in messages %}
-    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-    {% endfor %}
-</ul>
-{% endif %}
-
-<form method="post">
-  {% csrf_token %}
-  {{ user_form.as_p }}
-  {{ client_form.as_p }}
-  <button type="submit">Save changes</button>
-</form>
-
-</body>
-</html>
+{% block main %}
+    {% load bootstrap3 %}
+    <div class="row">
+        <div class="col-md-2 col-md-offset-5">
+            <form method="post">
+              {% csrf_token %}
+              {% bootstrap_form user_form %}
+              {% bootstrap_form client_form %}
+                {% buttons %}
+                    <button type="submit" class="btn btn-primary">
+                        {% bootstrap_icon "star" %} Зарегестрироваться
+                    </button>
+                {% endbuttons %}
+            </form>
+        </div>
+    </div>
+{% endblock %}

@@ -5,6 +5,18 @@ from django.contrib.auth import get_user
 from django.test import Client as TestClient
 from django.core.management import call_command
 
+
+
+class LogicTest(unittest.TestCase):
+    def setUp(self):
+        call_command('loaddata', 'user.json', verbosity=0)
+        call_command('loaddata', 'client.json', verbosity=0)
+        self.client = TestClient()
+
+    def test_1(self):
+        print User.objects.all()
+        self.assertTrue(True)
+
 class UserAuthTest(unittest.TestCase):
     email = 'email@email.ru'
     password = '123123'
