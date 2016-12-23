@@ -2,7 +2,7 @@
 import unittest
 from django.contrib.auth.models import User
 from django.test import Client as TestClient
-
+from django.core.management import call_command
 
 class UserAuthTest(unittest.TestCase):
     email = 'email@email.ru'
@@ -21,3 +21,10 @@ class UserAuthTest(unittest.TestCase):
                     )
         self.client.post('/register/',data)
         self.assertTrue(User.objects.filter(email=self.email))
+
+    def test_login_client(self):
+        call_command('loaddata', 'user.yaml', verbosity=0)
+        call_command('loaddata', 'client.yaml', verbosity=0)
+        data = dict(email=self.email,password=self.password)
+        self.client.post('/login/',data)
+        self.assertIn('_auth_user_id', self.client.session)

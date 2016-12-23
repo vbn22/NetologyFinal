@@ -1,0 +1,10 @@
+[
+{
+    "model": "main.client",
+    "pk": 1,
+    "fields": {
+        "user": 1,
+        "wallet": 100.0
+    }
+}
+]
