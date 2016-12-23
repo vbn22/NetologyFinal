@@ -4,23 +4,14 @@ from django.contrib.auth.models import User
 from django.contrib.auth import get_user
 from django.test import Client as TestClient
 from django.core.management import call_command
+from .models import Things
 
-
-
-class LogicTest(unittest.TestCase):
-    def setUp(self):
-        call_command('loaddata', 'user.json', verbosity=0)
-        call_command('loaddata', 'client.json', verbosity=0)
-        self.client = TestClient()
-
-    def test_1(self):
-        print User.objects.all()
-        self.assertTrue(True)
 
 class UserAuthTest(unittest.TestCase):
     email = 'email@email.ru'
     password = '123123'
     username = 'testuser'
+    user = None
 
     def setUp(self):
         self.client = TestClient()
@@ -28,7 +19,8 @@ class UserAuthTest(unittest.TestCase):
     def prepare_db(self):
         call_command('loaddata', 'user.json', verbosity=0)
         call_command('loaddata', 'client.json', verbosity=0)
-        return User.objects.get(username=self.username)
+        self.user = User.objects.get(username=self.username)
+        return self.user
 
     def test_client_can_register(self):
         data = dict(username=self.username,
@@ -52,3 +44,19 @@ class UserAuthTest(unittest.TestCase):
         self.client.login(username=self.username, password=self.password)
         self.client.get('/logout/')
         self.assertTrue(get_user(self.client).is_anonymous())
+
+
+class BusinessLogicTest(UserAuthTest):
+    def setUp(self,*args, **kwargs):
+        self.prepare_db()
+        call_command('loaddata', 'things.json', verbosity=0)
+        return super(BusinessLogicTest,self).setUp(*args, **kwargs)
+
+    def test_buy_subscribe_with_one_thing(self):
+        self.client.login(username=self.username, password=self.password)
+        things = Things.objects.filter(pk=1)
+        things_ids = things.values_list('id',flat=True)
+        data = dict(things=things_ids)
+        self.client.post('/subscribe/buy', data)
+        subscribtions_things = self.user.profile.subscriptions.all()[0].things.all()
+        self.assertEqual(things,subscribtions_things)
