@@ -11,8 +11,10 @@ def register(request):
         user_form = UserForm(request.POST)
         client_form = ClientForm(request.POST)
         if user_form.is_valid() and client_form.is_valid():
-            user_form.save()
+            user = user_form.save()
             client_form.save()
+            password = user_form.cleaned_data["password1"]
+            user.set_password(password)
             messages.success(request, ('Вы успешно зарегестрированы!'))
             return redirect('/')
         else:
