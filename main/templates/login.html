@@ -14,8 +14,12 @@
 </ul>
 {% endif %}
 
-<a href="/register/">Регистрация</a>
-<a href="/login/">Войти</a>
- <h1>{{ title }}</h1>
+<form method="post">
+  {% csrf_token %}
+   Username: <input type="text" class="form-control" id="username" name="username"> <br>
+   Password: <input type="password" class="form-control" id="password" name="password">
+  <button type="submit">Войти</button>
+</form>
+
 </body>
 </html>

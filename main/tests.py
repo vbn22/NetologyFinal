@@ -7,12 +7,13 @@ from django.core.management import call_command
 class UserAuthTest(unittest.TestCase):
     email = 'email@email.ru'
     password = '123123'
+    username = 'testuser'
 
     def setUp(self):
         self.client = TestClient()
 
     def test_client_can_register(self):
-        data = dict(username='testuser',
+        data = dict(username=self.username,
                     wallet=100,
                     last_name='last_name',
                     email=self.email,
@@ -25,6 +26,6 @@ class UserAuthTest(unittest.TestCase):
     def test_login_client(self):
         call_command('loaddata', 'user.yaml', verbosity=0)
         call_command('loaddata', 'client.yaml', verbosity=0)
-        data = dict(email=self.email,password=self.password)
+        data = dict(username=self.username,password=self.password)
         self.client.post('/login/',data)
         self.assertIn('_auth_user_id', self.client.session)
