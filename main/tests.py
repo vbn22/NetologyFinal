@@ -34,3 +34,8 @@ class UserAuthTest(unittest.TestCase):
         data = dict(username=self.username,password=self.password)
         self.client.post('/login/',data)
         self.assertTrue(get_user(self.client).is_authenticated())
+
+    def test_logout(self):
+        self.prepare_db()
+        self.client.login(username=self.username, password=self.password)
+        self.assertTrue(get_user(self.client).is_anonymous())
