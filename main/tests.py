@@ -38,4 +38,5 @@ class UserAuthTest(unittest.TestCase):
     def test_logout(self):
         self.prepare_db()
         self.client.login(username=self.username, password=self.password)
+        self.client.get('/logout/')
         self.assertTrue(get_user(self.client).is_anonymous())
