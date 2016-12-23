@@ -14,8 +14,8 @@ class UserAuthTest(unittest.TestCase):
         self.client = TestClient()
 
     def prepare_db(self):
-        call_command('loaddata', 'user.yaml', verbosity=0)
-        call_command('loaddata', 'client.yaml', verbosity=0)
+        call_command('loaddata', 'user.json', verbosity=0)
+        call_command('loaddata', 'client.json', verbosity=0)
         return User.objects.get(username=self.username)
 
     def test_client_can_register(self):
