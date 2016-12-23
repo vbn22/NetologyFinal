@@ -1,17 +1,31 @@
 # -*- coding: utf-8 -*-
 from django.shortcuts import render
-from django.http.response import HttpResponse,Http404
-from django.shortcuts import render_to_response
-from django.contrib import  auth
-from django.contrib.auth.models import user_logged_in
-from main.models import *
-from main import *
+from .forms import UserForm,ClientForm
 from django.views.generic import TemplateView
+from django.shortcuts import redirect
+from django.contrib import messages
+
+
+def register(request):
+    if request.method == 'POST':
+        user_form = UserForm(request.POST)
+        client_form = ClientForm(request.POST)
+        if user_form.is_valid() and client_form.is_valid():
+            user_form.save()
+            client_form.save()
+            return redirect('/')
+    else:
+        user_form = UserForm()
+        client_form = ClientForm()
+    return render(request, 'register.html', {
+        'user_form': user_form,
+        'client_form': client_form
+    })
 
 
 class Home(TemplateView):
     template_name = "home.html"
 
     def get_context_data(self):
-        return dict(title='Hello World')
+        return dict(title='Сервис продажи бритвенных станков')
 
