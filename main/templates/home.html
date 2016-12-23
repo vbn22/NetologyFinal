@@ -14,8 +14,16 @@
 </ul>
 {% endif %}
 
-<a href="/register/">Регистрация</a>
-<a href="/login/">Войти</a>
+
+{% if user.is_authenticated %}
+    {{ user }} (<a href="/logout/">Выйти</a>)
+{% else %}
+    <a href="/register/">Регистрация</a>
+    <a href="/login/">Войти</a>
+{% endif %}
+
+
+
  <h1>{{ title }}</h1>
 </body>
 </html>

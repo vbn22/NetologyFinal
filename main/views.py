@@ -13,6 +13,7 @@ def logout(request):
     auth_logout(request)
     return redirect('/')
 
+
 def login(request):
     if request.method == 'POST':
         username = request.POST['username']
@@ -25,7 +26,6 @@ def login(request):
         else:
             messages.success(request, ('Такой пользователь не найден'))
     return render(request, 'login.html')
-
 
 
 def register(request):
@@ -56,5 +56,7 @@ class Home(TemplateView):
     template_name = "home.html"
 
     def get_context_data(self):
-        return dict(title='Сервис продажи бритвенных станков')
+        title = 'Сервис продажи бритвенных станков'
+        user = self.request.user
+        return dict(title=title,user=user)
 
