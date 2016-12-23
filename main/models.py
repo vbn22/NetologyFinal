@@ -8,8 +8,3 @@ from django.dispatch import receiver
 class Client(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE,blank=True,null=True,related_name='profile')
     wallet = models.FloatField(default=100.0, verbose_name='price')
-
-    @receiver(post_save, sender=User)
-    def create_user_profile(sender, instance, created, **kwargs):
-        if created:
-            Client.objects.create(user=instance)
