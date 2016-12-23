@@ -6,8 +6,12 @@ from django.shortcuts import redirect
 from django.contrib import messages
 from django.contrib.auth import authenticate
 from django.contrib.auth import login as auth_login
+from django.contrib.auth import logout as auth_logout
 
 
+def logout(request):
+    auth_logout(request)
+    return redirect('/')
 
 def login(request):
     if request.method == 'POST':

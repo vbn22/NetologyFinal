@@ -9,5 +9,6 @@ from django.contrib.auth.forms import UserCreationForm
 urlpatterns = [
     url('^register/', 'main.views.register',name='register'),
     url('^login/', 'main.views.login',name='login'),
+    url('^logout/', 'main.views.logout',name='logout'),
     url(r'^', Home.as_view(),name='home'),
 ]
