@@ -113,3 +113,7 @@ class EditSubscriptionTest(TestCase):
         self.client.post('/subscribe/edit/'+str(self.subscription_id),dict(status=status))
         sub_status = self.user.profile.subscriptions.all()[0].status
         self.assertEqual(status,sub_status)
+
+    def test_remove_subscription(self):
+        self.client.get('/subscribe/remove/'+str(self.subscription_id))
+        self.assertFalse(self.user.profile.subscriptions.all())
