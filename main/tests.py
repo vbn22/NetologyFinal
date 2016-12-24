@@ -107,3 +107,9 @@ class EditSubscriptionTest(TestCase):
         self.client.post('/subscribe/edit/'+str(self.subscription_id),dict(days=new_days_ids))
         sub_new_days_ids = self.user.profile.subscriptions.all()[0].days.values_list('id',flat=True)
         self.assertEqual(set(new_days_ids),set(sub_new_days_ids))
+
+    def test_change_status_subscription(self):
+        status = False
+        self.client.post('/subscribe/edit/'+str(self.subscription_id),dict(status=status))
+        sub_status = self.user.profile.subscriptions.all()[0].status
+        self.assertEqual(status,sub_status)
