@@ -59,4 +59,4 @@ class BusinessLogicTest(UserAuthTest):
         data = dict(things=things_ids)
         self.client.post('/subscribe/buy', data)
         subscribtions_things = self.user.profile.subscriptions.all()[0].things.all()
-        self.assertEqual(things,subscribtions_things)
+        self.assertEqual(set(things),set(subscribtions_things))

@@ -25,3 +25,11 @@ class ClientForm(forms.ModelForm):
         model = Client
         fields = ('wallet',)
 
+
+class SubscriptionsForm(forms.ModelForm):
+    class Meta:
+        model = Subscriptions
+        fields = ('things',)
+        fields_required = ['things']
+
+

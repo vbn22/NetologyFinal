@@ -1,12 +1,26 @@
 # -*- coding: utf-8 -*-
 from django.shortcuts import render
-from .forms import UserForm,ClientForm
+from .forms import UserForm,ClientForm,SubscriptionsForm
 from django.views.generic import TemplateView
 from django.shortcuts import redirect
 from django.contrib import messages
 from django.contrib.auth import authenticate
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
+
+
+
+def subscribe_buy(request):
+    subscribe_form = SubscriptionsForm(request.POST)
+    if request.POST and subscribe_form.is_valid():
+        subscribe = subscribe_form.save()
+        subscribe.user = request.user.profile
+        subscribe.save()
+        messages.success(request, ('Ваш заказ принят !'))
+        return redirect('/')
+    return render(request, 'subscribe.html', {
+        'subscribe_form': subscribe_form,
+    })
 
 
 def logout(request):

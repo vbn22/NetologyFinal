@@ -14,9 +14,12 @@ class Things(models.Model):
     title = models.CharField(verbose_name='Name',default='default',max_length=125)
     price = models.FloatField(default=1.0,verbose_name='price')
 
+    def __unicode__(self):
+        return self.title
+
 
 class Subscriptions(models.Model):
-    user = models.ForeignKey(Client,verbose_name='user',related_name='subscriptions')
+    user = models.ForeignKey(Client,verbose_name='user',related_name='subscriptions',blank=True,null=True)
     things = models.ManyToManyField(Things,verbose_name='things', blank=True)
     date_of_purchase = models.DateTimeField(auto_now=True)
     delivery_dates = models.CharField(default='',verbose_name='delivery dates',max_length=255)
