@@ -17,6 +17,11 @@ class Things(models.Model):
     def __unicode__(self):
         return self.title
 
+class Days(models.Model):
+    day = models.PositiveSmallIntegerField(default=1)
+
+    def __unicode__(self):
+        return str(self.day)
 
 class Subscriptions(models.Model):
     PERIOD_TYPE = ((0, ('Раз в два месяца')),
@@ -28,3 +33,4 @@ class Subscriptions(models.Model):
     things = models.ManyToManyField(Things,verbose_name='things', blank=True)
     date_of_purchase = models.DateTimeField(auto_now=True)
     period_type = models.PositiveSmallIntegerField(choices=PERIOD_TYPE, default=0)
+    days = models.ManyToManyField(Days,verbose_name='days',blank=True,null=True)

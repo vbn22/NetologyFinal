@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import get_user
 from django.test import Client as TestClient
 from django.core.management import call_command
-from .models import Things, Subscriptions
+from .models import Things, Subscriptions, Days
 
 
 class UserAuthTest(unittest.TestCase):
@@ -50,6 +50,7 @@ class BusinessLogicTest(UserAuthTest):
     def setUp(self,*args, **kwargs):
         self.prepare_db()
         call_command('loaddata', 'things.json', verbosity=0)
+        call_command('loaddata', 'days.json', verbosity=0)
         super(BusinessLogicTest,self).setUp(*args, **kwargs)
         self.client.login(username=self.username, password=self.password)
 
@@ -73,3 +74,9 @@ class BusinessLogicTest(UserAuthTest):
         self.client.post('/subscribe/buy', dict(period_type=period_type))
         sub_period_type = self.user.profile.subscriptions.all()[0].period_type
         self.assertEqual(period_type,sub_period_type)
+
+    def test_subscribe_with_days(self):
+        days_ids = Days.objects.filter(day__in=[1,3]).values_list('id',flat=True)
+        self.client.post('/subscribe/buy', dict(days=days_ids))
+        sub_days_ids = self.user.profile.subscriptions.all()[0].days.values_list('id',flat=True)
+        self.assertEqual(days_ids,sub_days_ids)
