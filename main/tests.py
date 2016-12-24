@@ -50,31 +50,26 @@ class BusinessLogicTest(UserAuthTest):
     def setUp(self,*args, **kwargs):
         self.prepare_db()
         call_command('loaddata', 'things.json', verbosity=0)
-        return super(BusinessLogicTest,self).setUp(*args, **kwargs)
+        super(BusinessLogicTest,self).setUp(*args, **kwargs)
+        self.client.login(username=self.username, password=self.password)
 
     def tearDown(self):
         Subscriptions.objects.all().delete()
 
     def test_buy_subscribe_with_one_thing(self):
-        self.client.login(username=self.username, password=self.password)
         things_ids = Things.objects.filter(pk=1).values_list('id',flat=True)
-        data = dict(things=things_ids)
-        self.client.post('/subscribe/buy', data)
+        self.client.post('/subscribe/buy', dict(things=things_ids))
         sub_things_ids = self.user.profile.subscriptions.all()[0].things.values_list('id',flat=True)
         self.assertEqual(set(things_ids),set(sub_things_ids))
 
     def test_buy_subscribe_with_several_things(self):
-        self.client.login(username=self.username, password=self.password)
         things_ids = Things.objects.all().values_list('id',flat=True)
-        data = dict(things=things_ids)
-        self.client.post('/subscribe/buy', data)
+        self.client.post('/subscribe/buy', dict(things=things_ids))
         sub_things_ids = self.user.profile.subscriptions.all()[0].things.values_list('id',flat=True)
         self.assertEqual(set(things_ids),set(sub_things_ids))
 
     def test_subscribe_with_type_period(self):
-        self.client.login(username=self.username, password=self.password)
         period_type = Subscriptions.PERIOD_TYPE[0][0]
-        data = dict(period_type=period_type)
-        self.client.post('/subscribe/buy', data)
+        self.client.post('/subscribe/buy', dict(period_type=period_type))
         sub_period_type = self.user.profile.subscriptions.all()[0].period_type
         self.assertEqual(period_type,sub_period_type)
