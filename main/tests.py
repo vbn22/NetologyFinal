@@ -57,18 +57,16 @@ class BusinessLogicTest(UserAuthTest):
 
     def test_buy_subscribe_with_one_thing(self):
         self.client.login(username=self.username, password=self.password)
-        things = Things.objects.filter(pk=1)
-        things_ids = things.values_list('id',flat=True)
+        things_ids = Things.objects.filter(pk=1).values_list('id',flat=True)
         data = dict(things=things_ids)
         self.client.post('/subscribe/buy', data)
-        subscribtions_things = self.user.profile.subscriptions.all()[0].things.all()
-        self.assertEqual(set(things),set(subscribtions_things))
+        sub_things_ids = self.user.profile.subscriptions.all()[0].things.values_list('id',flat=True)
+        self.assertEqual(set(things_ids),set(sub_things_ids))
 
     def test_buy_subscribe_with_several_things(self):
         self.client.login(username=self.username, password=self.password)
-        things = Things.objects.all()
-        things_ids = things.values_list('id',flat=True)
+        things_ids = Things.objects.all().values_list('id',flat=True)
         data = dict(things=things_ids)
         self.client.post('/subscribe/buy', data)
-        subscribtions_things = self.user.profile.subscriptions.all()[0].things.all()
-        self.assertEqual(set(things),set(subscribtions_things))
+        sub_things_ids = self.user.profile.subscriptions.all()[0].things.values_list('id',flat=True)
+        self.assertEqual(set(things_ids),set(sub_things_ids))
