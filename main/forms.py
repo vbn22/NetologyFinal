@@ -27,9 +27,9 @@ class ClientForm(forms.ModelForm):
 
 
 class SubscriptionsForm(forms.ModelForm):
+    period_type = forms.ChoiceField(choices = Subscriptions.PERIOD_TYPE,required=False)
     class Meta:
         model = Subscriptions
-        fields = ('things',)
-        fields_required = ['things']
+        fields = ('things','period_type')
 
 
