@@ -30,6 +30,18 @@ class SubscriptionsForm(forms.ModelForm):
     period_type = forms.ChoiceField(choices = Subscriptions.PERIOD_TYPE,required=False)
     class Meta:
         model = Subscriptions
-        fields = ('things','period_type')
+        fields = ('things','period_type','days')
 
-
+    def clean_days(self):
+        period_type = self.cleaned_data.get("period_type")
+        days = self.cleaned_data.get("days")
+        if period_type and days:
+            if len(days) > 2:
+                raise forms.ValidationError("Вы выбрали больше двух дней")
+            elif len(days) == 2 and int(period_type) != 2:
+                raise forms.ValidationError("Вам нужно выбрать один день")
+            elif len(days) == 1 and int(period_type) == 2:
+                raise forms.ValidationError("Вам нужно выбрать два дня")
+            elif len(days) == 0:
+                raise forms.ValidationError("Вы не выбрали ниодного дня")
+        return days

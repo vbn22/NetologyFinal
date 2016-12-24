@@ -79,4 +79,4 @@ class BusinessLogicTest(UserAuthTest):
         days_ids = Days.objects.filter(day__in=[1,3]).values_list('id',flat=True)
         self.client.post('/subscribe/buy', dict(days=days_ids))
         sub_days_ids = self.user.profile.subscriptions.all()[0].days.values_list('id',flat=True)
-        self.assertEqual(days_ids,sub_days_ids)
+        self.assertEqual(set(days_ids),set(sub_days_ids))
