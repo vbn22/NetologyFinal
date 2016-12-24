@@ -80,3 +80,7 @@ class BusinessLogicTest(UserAuthTest):
         self.client.post('/subscribe/buy', dict(days=days_ids))
         sub_days_ids = self.user.profile.subscriptions.all()[0].days.values_list('id',flat=True)
         self.assertEqual(set(days_ids),set(sub_days_ids))
+
+    def test_page_with_list_of_subscriptions(self):
+        response = self.client.get('/subscribe/list')
+        self.assertTrue(response.context['subscriptions'])
