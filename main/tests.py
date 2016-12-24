@@ -1,58 +1,57 @@
 # -*- coding: utf-8 -*-
 import unittest
+from django.test import TestCase
 from django.contrib.auth.models import User
 from django.contrib.auth import get_user
 from django.test import Client as TestClient
 from django.core.management import call_command
 from .models import Things, Subscriptions, Days
 
+email = 'email@email.ru'
+password = '123123'
+username = 'testuser'
+last_name = 'last_name'
 
-class UserAuthTest(unittest.TestCase):
-    email = 'email@email.ru'
-    password = '123123'
-    username = 'testuser'
-    user = None
+class UserAuthTest(TestCase):
+    fixtures = ['user.json','client.json']
+    client,user = None,None
 
     def setUp(self):
         self.client = TestClient()
-
-    def prepare_db(self):
-        call_command('loaddata', 'user.json', verbosity=0)
-        call_command('loaddata', 'client.json', verbosity=0)
-        self.user = User.objects.get(username=self.username)
-        return self.user
+        self.user = User.objects.get(username=username)
 
     def test_client_can_register(self):
-        data = dict(username=self.username,
+        username2 = 'username2'
+        email2 = 'test2@test.ru'
+        data = dict(username=username2,
                     wallet=100,
-                    last_name='last_name',
-                    email=self.email,
-                    password1=self.password,
-                    password2=self.password
+                    last_name=last_name,
+                    email=email2,
+                    password1=password,
+                    password2=password
                     )
         self.client.post('/register/',data)
-        self.assertTrue(User.objects.filter(email=self.email))
+        self.assertTrue(User.objects.filter(username=username2))
 
     def test_login_client(self):
-        self.prepare_db()
-        data = dict(username=self.username,password=self.password)
+        data = dict(username=username,password=password)
         self.client.post('/login/',data)
         self.assertTrue(get_user(self.client).is_authenticated())
 
     def test_logout(self):
-        self.prepare_db()
-        self.client.login(username=self.username, password=self.password)
+        self.client.login(username=username, password=password)
         self.client.get('/logout/')
         self.assertTrue(get_user(self.client).is_anonymous())
 
 
-class BusinessLogicTest(UserAuthTest):
+class CreateSubscriptionTest(TestCase):
+    fixtures = ['user.json','client.json','things.json','days.json']
+    client,user = None,None
+
     def setUp(self,*args, **kwargs):
-        self.prepare_db()
-        call_command('loaddata', 'things.json', verbosity=0)
-        call_command('loaddata', 'days.json', verbosity=0)
-        super(BusinessLogicTest,self).setUp(*args, **kwargs)
-        self.client.login(username=self.username, password=self.password)
+        self.client = TestClient()
+        self.client.login(username=username, password=password)
+        self.user = User.objects.get(username=username)
 
     def tearDown(self):
         Subscriptions.objects.all().delete()
@@ -81,21 +80,30 @@ class BusinessLogicTest(UserAuthTest):
         sub_days_ids = self.user.profile.subscriptions.all()[0].days.values_list('id',flat=True)
         self.assertEqual(set(days_ids),set(sub_days_ids))
 
+
+class EditSubscriptionTest(TestCase):
+    fixtures = ['user.json','client.json','things.json','days.json','subscriptions.json']
+    client,user,subscription_id = None,None,None
+
+    def setUp(self,*args, **kwargs):
+        self.client = TestClient()
+        self.client.login(username=username, password=password)
+        self.user = User.objects.get(username=username)
+        self.subscription_id = self.user.profile.subscriptions.all()[0].id
+
+    def tearDown(self):
+        Subscriptions.objects.all().delete()
+
     def test_page_with_list_of_subscriptions(self):
-        call_command('loaddata', 'subscriptions.json', verbosity=0)
         response = self.client.get('/subscribe/list')
         self.assertTrue(response.context['subscriptions'])
 
     def test_page_edit_subscription(self):
-        call_command('loaddata', 'subscriptions.json', verbosity=0)
-        id = self.user.profile.subscriptions.all()[0].id
-        response = self.client.get('/subscribe/edit/'+str(id))
+        response = self.client.get('/subscribe/edit/'+str(self.subscription_id))
         self.assertTrue(response.context['subscribe_form'])
 
     def test_change_days_in_subscription(self):
-        call_command('loaddata', 'subscriptions.json', verbosity=0)
-        id = self.user.profile.subscriptions.all()[0].id
         new_days_ids = Days.objects.filter(day__in=[2,25]).values_list('id',flat=True)
-        self.client.post('/subscribe/edit/'+str(id),dict(days=new_days_ids))
+        self.client.post('/subscribe/edit/'+str(self.subscription_id),dict(days=new_days_ids))
         sub_new_days_ids = self.user.profile.subscriptions.all()[0].days.values_list('id',flat=True)
         self.assertEqual(set(new_days_ids),set(sub_new_days_ids))
