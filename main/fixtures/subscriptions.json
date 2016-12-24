@@ -1,0 +1,19 @@
+[
+{
+    "model": "main.subscriptions",
+    "pk": 12,
+    "fields": {
+        "user": 1,
+        "date_of_purchase": "2016-12-24T21:54:05.394Z",
+        "period_type": 2,
+        "things": [
+            1,
+            2
+        ],
+        "days": [
+            3,
+            10
+        ]
+    }
+}
+]

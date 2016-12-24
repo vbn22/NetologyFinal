@@ -7,9 +7,16 @@ from django.contrib import messages
 from django.contrib.auth import authenticate
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
+from django.contrib.auth.decorators import login_required
 
 
+@login_required
+def subscribe_list(request):
+    subscriptions = request.user.profile.subscriptions.all()
+    return render(request,'subscriptions.html',dict(subscriptions=subscriptions))
 
+
+@login_required
 def subscribe_buy(request):
     subscribe_form = SubscriptionsForm(request.POST)
     if request.POST and subscribe_form.is_valid():
@@ -22,7 +29,7 @@ def subscribe_buy(request):
         'subscribe_form': subscribe_form,
     })
 
-
+@login_required
 def logout(request):
     auth_logout(request)
     return redirect('/')

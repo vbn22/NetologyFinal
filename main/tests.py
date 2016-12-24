@@ -82,5 +82,6 @@ class BusinessLogicTest(UserAuthTest):
         self.assertEqual(set(days_ids),set(sub_days_ids))
 
     def test_page_with_list_of_subscriptions(self):
+        call_command('loaddata', 'subscriptions.json', verbosity=0)
         response = self.client.get('/subscribe/list')
         self.assertTrue(response.context['subscriptions'])
