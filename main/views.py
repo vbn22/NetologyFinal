@@ -10,6 +10,13 @@ from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.decorators import login_required
 
+
+@login_required
+def subscribe_remove(request,id):
+    Subscriptions.objects.filter(pk=id).delete()
+    messages.success(request, ('Подписка удалена !'))
+    return redirect('/subscribe/list')
+
 @login_required
 def subscribe_edit(request,id):
     if request.POST:
