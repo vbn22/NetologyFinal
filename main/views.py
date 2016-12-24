@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.shortcuts import render
-from .forms import UserForm,ClientForm,SubscriptionsForm
+from .forms import UserForm,ClientForm,SubscriptionsForm,SubscriptionsEditForm
 from .models import Subscriptions
 from django.views.generic import TemplateView
 from django.shortcuts import redirect
@@ -13,9 +13,9 @@ from django.contrib.auth.decorators import login_required
 @login_required
 def subscribe_edit(request,id):
     if request.POST:
-        subscribe_form = SubscriptionsForm(request.POST,instance=Subscriptions.objects.get(pk=id))
+        subscribe_form = SubscriptionsEditForm(request.POST,instance=Subscriptions.objects.get(pk=id))
     else:
-        subscribe_form = SubscriptionsForm(instance=Subscriptions.objects.get(pk=id))
+        subscribe_form = SubscriptionsEditForm(instance=Subscriptions.objects.get(pk=id))
     if request.POST and subscribe_form.is_valid():
         subscribe = subscribe_form.save()
         messages.success(request, ('Изменения сохранены !'))

@@ -6,7 +6,7 @@
         <div class="col-md-7 col-md-offset-2">
             <ul class="list-group">
                 {% for subscription in subscriptions %}
-                    <li class="list-group-item row">
+                    <li class="list-group-item row {% if not subscription.status %}inactive{% endif %}">
                         <div class="col-md-1">{{ subscription.id }})</div>
                         <div class="col-md-4">{% for thing in  subscription.things.all %}<b>{{ thing.title }}</b>
                             ,{% endfor %}</div>

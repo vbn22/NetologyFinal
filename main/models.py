@@ -34,3 +34,4 @@ class Subscriptions(models.Model):
     date_of_purchase = models.DateTimeField(auto_now=True)
     period_type = models.PositiveSmallIntegerField(choices=PERIOD_TYPE, default=0)
     days = models.ManyToManyField(Days,verbose_name='days',blank=True,null=True)
+    status = models.BooleanField(default=True,verbose_name='Status')

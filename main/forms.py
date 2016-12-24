@@ -45,3 +45,8 @@ class SubscriptionsForm(forms.ModelForm):
             elif len(days) == 0:
                 raise forms.ValidationError("Вы не выбрали ниодного дня")
         return days
+
+class SubscriptionsEditForm(SubscriptionsForm):
+    class Meta:
+        model = Subscriptions
+        fields = ('things','period_type','days','status')
