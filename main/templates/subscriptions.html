@@ -7,14 +7,14 @@
             <ul class="list-group">
                 {% for subscription in subscriptions %}
                     <li class="list-group-item row">
-                        <div class="col-md-1">{{ subscription.id }}</div>
+                        <div class="col-md-1">{{ subscription.id }})</div>
                         <div class="col-md-4">{% for thing in  subscription.things.all %}<b>{{ thing.title }}</b>
                             ,{% endfor %}</div>
-                        <div class="col-md-2">{{ subscription.date_of_purchase|date:"d M Y" }})</div>
+                        <div class="col-md-2">{{ subscription.date_of_purchase|date:"d M Y" }}</div>
                         <div class="col-md-5">
-                            <a class="btn btn-info btn-sm" href="/login/">Календарь</a>
-                            <a class="btn btn-warning btn-sm" href="/login/">Изменить</a>
-                            <a class="btn btn-danger btn-sm" href="/login/">Удалить</a>
+                            <a class="btn btn-info btn-sm" href="/">Календарь</a>
+                            <a class="btn btn-warning btn-sm" href="/subscribe/edit/{{ subscription.id }}">Изменить</a>
+                            <a class="btn btn-danger btn-sm" href="/">Удалить</a>
                         </div>
                     </li>
                 {% endfor %}

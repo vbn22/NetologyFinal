@@ -88,5 +88,6 @@ class BusinessLogicTest(UserAuthTest):
 
     def test_page_edit_subscription(self):
         call_command('loaddata', 'subscriptions.json', verbosity=0)
-        response = self.client.get('/subscribe/edit/1')
-        self.assertTrue(response.context['subscription'])
+        id = self.user.profile.subscriptions.all()[0].id
+        response = self.client.get('/subscribe/edit/'+str(id))
+        self.assertTrue(response.context['subscribe_form'])
