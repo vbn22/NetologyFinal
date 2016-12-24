@@ -67,7 +67,7 @@ def register(request):
 
 
 class Home(TemplateView):
-    template_name = "home.html"
+    template_name = "index.html"
 
     def get_context_data(self):
         title = 'Сервис продажи бритвенных станков'
