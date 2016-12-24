@@ -12,7 +12,7 @@
                             ,{% endfor %}</div>
                         <div class="col-md-2">{{ subscription.date_of_purchase|date:"d M Y" }}</div>
                         <div class="col-md-5">
-                            <a class="btn btn-info btn-sm" href="/">Календарь</a>
+                            <a class="btn btn-info btn-sm" href="/subscribe/description/{{ subscription.id }}">Описание</a>
                             <a class="btn btn-warning btn-sm" href="/subscribe/edit/{{ subscription.id }}">Изменить</a>
                             <a class="btn btn-danger btn-sm" href="/subscribe/remove/{{ subscription.id }}">Удалить</a>
                         </div>

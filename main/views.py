@@ -11,6 +11,17 @@ from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.decorators import login_required
 
 
+
+@login_required
+def subscribe_description(request,id):
+    subscription = Subscriptions.objects.get(pk=id)
+    return render(request, 'subscribe_description.html', {
+        'subscription': subscription,
+        'period_type':[x[1] for x in Subscriptions.PERIOD_TYPE if x[0] == subscription.period_type]
+    })
+
+
+
 @login_required
 def subscribe_remove(request,id):
     Subscriptions.objects.filter(pk=id).delete()

@@ -1,0 +1,15 @@
+{% extends 'home.html' %}
+
+{% block main %}
+    {% load bootstrap3 %}
+    <div class="row">
+        <div class="col-md-2 col-md-offset-5">
+            Подпсика: #{{ subscription.id }}<br>
+            Оформлена: {{ subscription.date_of_purchase|date:"d M Y" }}<br>
+            Товары: {% for thing in  subscription.things.all %}<b>{{ thing.title }}</b>,{% endfor %}<br>
+            Доставляется: {% if period_type %}{{ period_type.0 }}{% endif %}<br>
+            По числам: {% for day in  subscription.days.all %}<b>{{ day.day }}</b>,{% endfor %}<br>
+        </div>
+    </div>
+
+{% endblock %}
