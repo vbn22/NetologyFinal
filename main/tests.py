@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import get_user
 from django.test import Client as TestClient
 from django.core.management import call_command
-from .models import Things
+from .models import Things, Subscriptions
 
 
 class UserAuthTest(unittest.TestCase):
@@ -52,9 +52,21 @@ class BusinessLogicTest(UserAuthTest):
         call_command('loaddata', 'things.json', verbosity=0)
         return super(BusinessLogicTest,self).setUp(*args, **kwargs)
 
+    def tearDown(self):
+        Subscriptions.objects.all().delete()
+
     def test_buy_subscribe_with_one_thing(self):
         self.client.login(username=self.username, password=self.password)
         things = Things.objects.filter(pk=1)
+        things_ids = things.values_list('id',flat=True)
+        data = dict(things=things_ids)
+        self.client.post('/subscribe/buy', data)
+        subscribtions_things = self.user.profile.subscriptions.all()[0].things.all()
+        self.assertEqual(set(things),set(subscribtions_things))
+
+    def test_buy_subscribe_with_several_things(self):
+        self.client.login(username=self.username, password=self.password)
+        things = Things.objects.all()
         things_ids = things.values_list('id',flat=True)
         data = dict(things=things_ids)
         self.client.post('/subscribe/buy', data)
