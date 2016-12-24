@@ -91,3 +91,11 @@ class BusinessLogicTest(UserAuthTest):
         id = self.user.profile.subscriptions.all()[0].id
         response = self.client.get('/subscribe/edit/'+str(id))
         self.assertTrue(response.context['subscribe_form'])
+
+    def test_change_days_in_subscription(self):
+        call_command('loaddata', 'subscriptions.json', verbosity=0)
+        id = self.user.profile.subscriptions.all()[0].id
+        new_days_ids = Days.objects.filter(day__in=[2,25]).values_list('id',flat=True)
+        self.client.post('/subscribe/edit/'+str(id),dict(days=new_days_ids))
+        sub_new_days_ids = self.user.profile.subscriptions.all()[0].days.values_list('id',flat=True)
+        self.assertEqual(set(new_days_ids),set(sub_new_days_ids))
