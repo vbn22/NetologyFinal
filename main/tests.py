@@ -70,3 +70,11 @@ class BusinessLogicTest(UserAuthTest):
         self.client.post('/subscribe/buy', data)
         sub_things_ids = self.user.profile.subscriptions.all()[0].things.values_list('id',flat=True)
         self.assertEqual(set(things_ids),set(sub_things_ids))
+
+    def test_subscribe_with_type_period(self):
+        self.client.login(username=self.username, password=self.password)
+        period_type = Subscriptions.PERIOD_TYPE[0][0]
+        data = dict(period_type=period_type)
+        self.client.post('/subscribe/buy', data)
+        sub_period_type = self.user.profile.subscriptions.all()[0].period_type
+        self.assertEqual(period_type,sub_period_type)

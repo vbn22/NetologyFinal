@@ -19,7 +19,12 @@ class Things(models.Model):
 
 
 class Subscriptions(models.Model):
+    PERIOD_TYPE = ((0, ('Раз в два месяца')),
+                   (1, ('Раз в месяц')),
+                   (2, ('Два раза в месяц'))
+                   )
+
     user = models.ForeignKey(Client,verbose_name='user',related_name='subscriptions',blank=True,null=True)
     things = models.ManyToManyField(Things,verbose_name='things', blank=True)
     date_of_purchase = models.DateTimeField(auto_now=True)
-    delivery_dates = models.CharField(default='',verbose_name='delivery dates',max_length=255)
+    period_type = models.PositiveSmallIntegerField(choices=PERIOD_TYPE, default=0)
