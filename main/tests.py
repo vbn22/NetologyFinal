@@ -6,6 +6,8 @@ from django.contrib.auth import get_user
 from django.test import Client as TestClient
 from django.core.management import call_command
 from .models import Things, Subscriptions, Days
+from datetime import datetime
+
 
 email = 'email@email.ru'
 password = '123123'
@@ -117,3 +119,22 @@ class EditSubscriptionTest(TestCase):
     def test_remove_subscription(self):
         self.client.get('/subscribe/remove/'+str(self.subscription_id))
         self.assertFalse(self.user.profile.subscriptions.all())
+
+
+class PriceTest(TestCase):
+    fixtures = ['user.json','client.json','things.json','days.json','subscriptions.json']
+    client,user,subscription,subscription_id = None,None,None,None
+
+    def setUp(self,*args, **kwargs):
+        self.client = TestClient()
+        self.client.login(username=username, password=password)
+        self.user = User.objects.get(username=username)
+        self.subscription = self.user.profile.subscriptions.all()[0]
+        self.subscription_id = self.subscription.id
+
+    def test_calculate_price_for_date(self):
+        date = datetime.strptime('2017-02-01','%Y-%m-%d')
+        date_of_purchase = self.subscription.date_of_purchase #2016-12-24
+        url = '/calculate/'+str(self.subscription_id)+'/'+date.strftime('%Y-%m-%d')
+        response = self.client.get(url)
+        self.assertEqual((1+8)+(1+8),int(response.context['result_calculate']))
