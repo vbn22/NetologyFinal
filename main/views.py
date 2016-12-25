@@ -9,8 +9,27 @@ from django.contrib.auth import authenticate
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.decorators import login_required
+from datetime import datetime,timedelta
 
 
+@login_required
+def calculate(request,id,date):
+    result_calculate = 0
+    subscription = Subscriptions.objects.get(pk=id)
+    subscription_days = subscription.days.values_list('day',flat=True)
+    price_per_day = sum(subscription.things.values_list('price',flat=True))
+    time_length = datetime.strptime(date,'%Y-%m-%d') - subscription.date_of_purchase.replace(tzinfo=None)
+    for iter_day in range(1,time_length.days+1):
+        iter_date = subscription.date_of_purchase + timedelta(days=iter_day)
+        if iter_date.day in subscription_days:
+            result_calculate += price_per_day
+
+    return render(request, 'subscribe_description.html', {
+        'date_calculate':date,
+        'result_calculate':result_calculate,
+        'subscription': subscription,
+        'period_type':[x[1] for x in Subscriptions.PERIOD_TYPE if x[0] == subscription.period_type]
+    })
 
 @login_required
 def subscribe_description(request,id):

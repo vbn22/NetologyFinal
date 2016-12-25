@@ -14,6 +14,11 @@
                     ,{% endfor %}</li>
             </ul>
         </div>
+        <div class="col-md-5 col-md-offset-3">
+            <input id="datepicker" value="{{ date_calculate }}" data-subscription="{{ subscription.id }}">
+            <a id="datepicker_btn"  class="btn btn-danger btn-sm" href="">Подсчитать</a>
+            {% if result_calculate %}<h3>Результат: {{ result_calculate }}</h3>{% endif %}
+        </div>
     </div>
 
 {% endblock %}

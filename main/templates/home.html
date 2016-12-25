@@ -65,10 +65,12 @@
 
             $("#datepicker").datepicker({
                 dateFormat: 'yy-mm-dd',
-                minDate:'2016-05-12',
                 inline: true,
                 changeYear: true,
                 changeMonth: true
+            }).change(function(){
+                var url = '/calculate/'+$(this).attr('data-subscription')+'/'+$("#datepicker").val();
+                $('#datepicker_btn').attr('href',url);
             });
         });
     </script>
