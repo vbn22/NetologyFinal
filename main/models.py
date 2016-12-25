@@ -15,7 +15,7 @@ class Things(models.Model):
     price = models.FloatField(default=1.0,verbose_name='price')
 
     def __unicode__(self):
-        return self.title
+        return '%s (%s$)'%(self.title,self.price)
 
 class Days(models.Model):
     day = models.PositiveSmallIntegerField(default=1)

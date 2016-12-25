@@ -8,7 +8,7 @@
                 {% for subscription in subscriptions %}
                     <li class="list-group-item row {% if not subscription.status %}inactive{% endif %}">
                         <div class="col-md-1">{{ subscription.id }})</div>
-                        <div class="col-md-4">{% for thing in  subscription.things.all %}<b>{{ thing.title }}</b>
+                        <div class="col-md-4">{% for thing in  subscription.things.all %}<b>{{ thing }}</b>
                             ,{% endfor %}</div>
                         <div class="col-md-2">{{ subscription.date_of_purchase|date:"d M Y" }}</div>
                         <div class="col-md-5">
