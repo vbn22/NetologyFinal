@@ -134,18 +134,19 @@ class PriceTest(TestCase):
         self.subscription_id = self.subscription.id
 
     def test_calculate_price_for_date(self):
-        date = datetime.strptime('2017-02-01','%Y-%m-%d')
+        date = datetime.strptime('01-02-2017','%d-%m-%Y')
         date_of_purchase = self.subscription.date_of_purchase #2016-12-24
-        url = '/calculate/'+str(self.subscription_id)+'/'+date.strftime('%Y-%m-%d')
+        url = '/calculate/'+str(self.subscription_id)+'/'+date.strftime('%d-%m-%Y')
         response = self.client.get(url)
         self.assertEqual((1+8)+(1+8),int(response.context['result_calculate']))
 
 
     def test_get_list_of_dates(self):
-        number_of_months = 1
-        start_date = '2017-01-01'
-        url = '/get_list_of_dates/%s/%s/%s'%(self.subscription_id,number_of_months,start_date)
+        start_date = '01-01-2017'
+        end_date = '01-02-2017'
+        url = '/get_list_of_dates/%s/%s/%s'%(self.subscription_id,start_date,end_date)
         response = self.client.get(url)
+        print response.content
         response = json.loads(response.content)
         list_of_dates = [u'01/03/2017',u'01/10/2017']
         self.assertEqual(set(list_of_dates),set(response['list_of_dates']))

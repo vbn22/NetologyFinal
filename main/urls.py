@@ -18,6 +18,6 @@ urlpatterns = [
     url('^subscribe/description/(\d+)', subscribe_description,name='subscribe_description'),
     url('^subscribe/list', subscribe_list,name='subscribe_list'),
     url('^calculate/(\d+)/([-\w]+)', calculate,name='calculate'),
-    url('^get_list_of_dates/(\d+)/(\d+)/([-\w]+)', list_of_dates,name='list_of_dates'),
+    url('^get_list_of_dates/(\d+)/([-\w]+)/([-\w]+)', list_of_dates,name='list_of_dates'),
     url(r'^', Home.as_view(),name='home'),
 ]

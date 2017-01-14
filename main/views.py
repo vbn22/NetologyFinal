@@ -12,6 +12,7 @@ from django.contrib.auth.decorators import login_required
 from datetime import datetime,timedelta
 from django.http import HttpResponse
 from dateutil.relativedelta import relativedelta
+from main import diff_month
 import json
 
 
@@ -21,7 +22,7 @@ def calculate(request,id,date):
     subscription = Subscriptions.objects.get(pk=id)
     subscription_days = subscription.days.values_list('day',flat=True)
     price_per_day = sum(subscription.things.values_list('price',flat=True))
-    time_length = datetime.strptime(date,'%Y-%m-%d') - subscription.date_of_purchase.replace(tzinfo=None)
+    time_length = datetime.strptime(date,'%d-%m-%Y') - subscription.date_of_purchase.replace(tzinfo=None)
     for iter_day in range(1,time_length.days+1):
         iter_date = subscription.date_of_purchase + timedelta(days=iter_day)
         if iter_date.day in subscription_days:
@@ -35,14 +36,31 @@ def calculate(request,id,date):
     })
 
 @login_required
-def list_of_dates(request,id,number_of_months,start_date):
-    subscription = Subscriptions.objects.get(pk=id)
+def list_of_dates(request,id,start_date,end_date):
     list_of_dates = []
-    days = [datetime.strptime(start_date,'%Y-%d-%m').replace(day=item.day) for item in subscription.days.all()]
-    for month in range(0,int(number_of_months)):
-         list_of_dates.extend([(day+relativedelta(months=month)).strftime('%m/%d/%Y') for day in days])
-    data = json.dumps(dict(list_of_dates=list_of_dates))
-    return HttpResponse(data,content_type='application/json')
+    subscription = Subscriptions.objects.get(pk=id)
+    start_date = datetime.strptime(start_date,'%d-%m-%Y')
+    end_date = datetime.strptime(end_date,'%d-%m-%Y')
+    months = range(0,diff_month(end_date,subscription.date_of_purchase))
+    if subscription.period_type == 0:
+        months = months[1::2]
+    for month in months:
+        for item_day in subscription.days.all():
+            day = item_day.day
+            while True:
+                try:
+                    date = start_date.replace(day=day) + relativedelta(months=month)
+                    if date in list_of_dates:
+                        #print 1
+                        raise ValueError('Date already exists')
+                    list_of_dates.append(date)
+                    break
+                except ValueError:
+                    #print 2
+                    day += 1
+    list_of_dates = filter(lambda day:day <= end_date and date > start_date,list_of_dates)
+    list_of_dates = [date.strftime('%m/%d/%Y') for date in list_of_dates]
+    return HttpResponse(json.dumps(dict(list_of_dates=list_of_dates)),content_type='application/json')
 
 @login_required
 def subscribe_description(request,id):
