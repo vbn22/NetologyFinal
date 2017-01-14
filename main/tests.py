@@ -7,7 +7,8 @@ from django.test import Client as TestClient
 from django.core.management import call_command
 from .models import Things, Subscriptions, Days
 from datetime import datetime,timedelta
-from dateutil.relativedelta import relativedelta
+import json
+
 
 email = 'email@email.ru'
 password = '123123'
@@ -145,5 +146,6 @@ class PriceTest(TestCase):
         start_date = '2017-01-01'
         url = '/get_list_of_dates/%s/%s/%s'%(self.subscription_id,number_of_months,start_date)
         response = self.client.get(url)
-        list_of_dates = ['1/3/2017','1/10/2017']
-        self.assertEqual(set(list_of_dates),set(response.context['list_of_dates']))
+        response = json.loads(response.content)
+        list_of_dates = [u'01/03/2017',u'01/10/2017']
+        self.assertEqual(set(list_of_dates),set(response['list_of_dates']))

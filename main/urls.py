@@ -2,7 +2,7 @@
 from django.conf.urls import url,include
 from django.contrib import admin
 from main.views import Home,register,login,logout,\
-    subscribe_buy,subscribe_list,subscribe_edit,subscribe_remove,subscribe_description,calculate
+    subscribe_buy,subscribe_list,subscribe_edit,subscribe_remove,subscribe_description,calculate,list_of_dates
 from django.views.generic.edit import CreateView
 from django.contrib.auth.forms import UserCreationForm
 
@@ -18,5 +18,6 @@ urlpatterns = [
     url('^subscribe/description/(\d+)', subscribe_description,name='subscribe_description'),
     url('^subscribe/list', subscribe_list,name='subscribe_list'),
     url('^calculate/(\d+)/([-\w]+)', calculate,name='calculate'),
+    url('^get_list_of_dates/(\d+)/(\d+)/([-\w]+)', list_of_dates,name='list_of_dates'),
     url(r'^', Home.as_view(),name='home'),
 ]
