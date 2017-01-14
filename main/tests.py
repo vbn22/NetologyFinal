@@ -6,8 +6,8 @@ from django.contrib.auth import get_user
 from django.test import Client as TestClient
 from django.core.management import call_command
 from .models import Things, Subscriptions, Days
-from datetime import datetime
-
+from datetime import datetime,timedelta
+from dateutil.relativedelta import relativedelta
 
 email = 'email@email.ru'
 password = '123123'
@@ -138,3 +138,15 @@ class PriceTest(TestCase):
         url = '/calculate/'+str(self.subscription_id)+'/'+date.strftime('%Y-%m-%d')
         response = self.client.get(url)
         self.assertEqual((1+8)+(1+8),int(response.context['result_calculate']))
+
+
+    def test_get_list_of_dates(self):
+        number_of_months = 6
+        url = '/get_list_of_dates/'+str(self.subscription_id)+'/'+str(number_of_months)
+        response = self.client.get(url)
+        today = datetime.now()
+        list_of_dates = []
+        days = [today.replace(day=item.day) for item in self.subscription.days.all()]
+        for month in range(0,number_of_months):
+            list_of_dates.extend([(day+relativedelta(months=month)).strftime('%m/%d/%Y') for day in days])
+        self.assertEqual(set(list_of_dates),set(response.context['list_of_dates']))
