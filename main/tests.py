@@ -141,12 +141,9 @@ class PriceTest(TestCase):
 
 
     def test_get_list_of_dates(self):
-        number_of_months = 6
-        url = '/get_list_of_dates/'+str(self.subscription_id)+'/'+str(number_of_months)
+        number_of_months = 1
+        start_date = '2017-01-01'
+        url = '/get_list_of_dates/%s/%s/%s'%(self.subscription_id,number_of_months,start_date)
         response = self.client.get(url)
-        today = datetime.now()
-        list_of_dates = []
-        days = [today.replace(day=item.day) for item in self.subscription.days.all()]
-        for month in range(0,number_of_months):
-            list_of_dates.extend([(day+relativedelta(months=month)).strftime('%m/%d/%Y') for day in days])
+        list_of_dates = ['1/3/2017','1/10/2017']
         self.assertEqual(set(list_of_dates),set(response.context['list_of_dates']))
