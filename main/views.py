@@ -11,8 +11,7 @@ from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.decorators import login_required
 from datetime import datetime,timedelta
 from django.http import HttpResponse
-from dateutil.relativedelta import relativedelta
-from main import diff_month
+from main import diff_month,get_dates
 import json
 
 
@@ -20,14 +19,10 @@ import json
 def calculate(request,id,date):
     result_calculate = 0
     subscription = Subscriptions.objects.get(pk=id)
-    subscription_days = subscription.days.values_list('day',flat=True)
     price_per_day = sum(subscription.things.values_list('price',flat=True))
-    time_length = datetime.strptime(date,'%d-%m-%Y') - subscription.date_of_purchase.replace(tzinfo=None)
-    for iter_day in range(1,time_length.days+1):
-        iter_date = subscription.date_of_purchase + timedelta(days=iter_day)
-        if iter_date.day in subscription_days:
-            result_calculate += price_per_day
-
+    start_date = subscription.date_of_purchase
+    for day in get_dates(id,start_date.replace(tzinfo=None),datetime.strptime(date,'%d-%m-%Y')):
+        result_calculate += price_per_day
     return render(request, 'subscribe_description.html', {
         'date_calculate':date,
         'result_calculate':result_calculate,
@@ -37,29 +32,9 @@ def calculate(request,id,date):
 
 @login_required
 def list_of_dates(request,id,start_date,end_date):
-    list_of_dates = []
-    subscription = Subscriptions.objects.get(pk=id)
     start_date = datetime.strptime(start_date,'%d-%m-%Y')
     end_date = datetime.strptime(end_date,'%d-%m-%Y')
-    months = range(0,diff_month(end_date,subscription.date_of_purchase))
-    if subscription.period_type == 0:
-        months = months[1::2]
-    for month in months:
-        for item_day in subscription.days.all():
-            day = item_day.day
-            while True:
-                try:
-                    date = start_date.replace(day=day) + relativedelta(months=month)
-                    if date in list_of_dates:
-                        #print 1
-                        raise ValueError('Date already exists')
-                    list_of_dates.append(date)
-                    break
-                except ValueError:
-                    #print 2
-                    day += 1
-    list_of_dates = filter(lambda day:day <= end_date and date > start_date,list_of_dates)
-    list_of_dates = [date.strftime('%m/%d/%Y') for date in list_of_dates]
+    list_of_dates = [date.strftime('%m/%d/%Y') for date in get_dates(id,start_date,end_date)]
     return HttpResponse(json.dumps(dict(list_of_dates=list_of_dates)),content_type='application/json')
 
 @login_required

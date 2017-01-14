@@ -146,7 +146,6 @@ class PriceTest(TestCase):
         end_date = '01-02-2017'
         url = '/get_list_of_dates/%s/%s/%s'%(self.subscription_id,start_date,end_date)
         response = self.client.get(url)
-        print response.content
         response = json.loads(response.content)
         list_of_dates = [u'01/03/2017',u'01/10/2017']
         self.assertEqual(set(list_of_dates),set(response['list_of_dates']))
