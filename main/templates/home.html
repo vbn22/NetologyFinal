@@ -34,6 +34,9 @@
         .inactive {
             opacity: 0.5;
         }
+        .alert{
+            margin:0;
+        }
 
     </style>
     <script>
@@ -72,6 +75,7 @@
                 var url = '/calculate/'+$(this).attr('data-subscription')+'/'+$("#datepicker").val();
                 $('#datepicker_btn').attr('href',url);
             });
+            $(".alert").show('highlight',400).delay(1000).fadeOut(300);
         });
     </script>
 </head>
@@ -79,7 +83,7 @@
 
 {% if messages %}
     {% for message in messages %}
-        <div class="alert alert-info">
+        <div class="alert alert-info" hidden="True">
             <span{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</span>
         </div>
     {% endfor %}
