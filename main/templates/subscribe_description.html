@@ -3,7 +3,11 @@
 {% block main %}
     {% load bootstrap3 %}
     <div class="row">
-        <div class="col-md-5 col-md-offset-3">
+        <div class="col-md-4">
+            <blockquote>
+                <p>Общая информация.</p>
+                <footer>Какие товары по каким числам в подписке</footer>
+            </blockquote>
             <ul class="list-group">
                 <li class="list-group-item">Подпсика: #{{ subscription.id }}</li>
                 <li class="list-group-item">Оформлена: {{ subscription.date_of_purchase|date:"d M Y" }}</li>
@@ -14,9 +18,20 @@
                     ,{% endfor %}</li>
             </ul>
         </div>
-        <div class="col-md-5 col-md-offset-3">
+        <div class="col-md-4" >
+            <blockquote>
+                <p>Расписание доставки</p>
+                <footer>Календарь дней доставки товаров</footer>
+            </blockquote>
+            <div id="multi-data-picker"></div>
+        </div>
+        <div class="col-md-4">
+            <blockquote>
+                <p>Калькулятор стоимости</p>
+                <footer>Выберите день чтобы получить стоимость потренныз денег</footer>
+            </blockquote>
             <input id="datepicker" value="{{ date_calculate }}" data-subscription="{{ subscription.id }}">
-            <a id="datepicker_btn"  class="btn btn-danger btn-sm" href="">Подсчитать</a>
+            <a id="datepicker_btn" class="btn btn-danger btn-sm" href="">Подсчитать</a>
             {% if result_calculate %}<h3>Результат: {{ result_calculate }}</h3>{% endif %}
         </div>
     </div>

@@ -19,10 +19,8 @@ import json
 def calculate(request,id,date):
     result_calculate = 0
     subscription = Subscriptions.objects.get(pk=id)
-    price_per_day = sum(subscription.things.values_list('price',flat=True))
-    start_date = subscription.date_of_purchase
-    for day in get_dates(id,start_date.replace(tzinfo=None),datetime.strptime(date,'%d-%m-%Y')):
-        result_calculate += price_per_day
+    for day in get_dates(id,subscription.date_of_purchase.replace(tzinfo=None),datetime.strptime(date,'%d-%m-%Y')):
+        result_calculate += sum(subscription.things.values_list('price',flat=True))
     return render(request, 'subscribe_description.html', {
         'date_calculate':date,
         'result_calculate':result_calculate,
@@ -60,7 +58,7 @@ def subscribe_edit(request,id):
     else:
         subscribe_form = SubscriptionsEditForm(instance=Subscriptions.objects.get(pk=id))
     if request.POST and subscribe_form.is_valid():
-        subscribe = subscribe_form.save()
+        subscribe_form.save()
         messages.success(request, ('Изменения сохранены !'))
         return redirect('/subscribe/list')
     return render(request, 'subscribe.html', {

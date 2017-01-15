@@ -25,8 +25,8 @@ def get_month_shift(subscription):
 def get_dates(id,start_date,end_date):
     from .models import Subscriptions
     list_of_dates = []
-    month_shift = 0
     subscription = Subscriptions.objects.get(pk=id)
+    month_shift = 0 if start_date.day < subscription.days.order_by('-day')[0].day else 1
     if not subscription.status:
         return list_of_dates
     while True:

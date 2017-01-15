@@ -12,6 +12,7 @@
             src="http://code.jquery.com/ui/1.12.0/jquery-ui.min.js"
             integrity="sha256-eGE6blurk5sHj+rmkfsGYeKyZx3M4bG+ZlFyA7Kns7E="
             crossorigin="anonymous"></script>
+    <script src="{% static "jquery-ui.multidatespicker.js" %}"></script>
     <link rel="stylesheet" href="http://code.jquery.com/ui/1.12.0/themes/smoothness/jquery-ui.css">
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
@@ -34,15 +35,22 @@
         .inactive {
             opacity: 0.5;
         }
-        .alert{
-            margin:0;
+
+        .alert {
+            margin: 0;
+        }
+        .row {
+            margin: 10px;
         }
 
+        .ui-datepicker .ui-datepicker-calendar .ui-state-highlight a {
+            background: #743620 none; /* a color that fits the widget theme */
+            color: white; /* a color that is readeable with the color above */
+        }
     </style>
     <script>
-        $(function () {
 
-
+        var load_data_picker = function () {
             jQuery(function ($) {
                 $.datepicker.regional['ru'] = {
                     closeText: 'Закрыть',
@@ -71,11 +79,22 @@
                 inline: true,
                 changeYear: true,
                 changeMonth: true
-            }).change(function(){
-                var url = '/calculate/'+$(this).attr('data-subscription')+'/'+$("#datepicker").val();
-                $('#datepicker_btn').attr('href',url);
+            }).change(function () {
+                var url = '/calculate/' + $(this).attr('data-subscription') + '/' + $("#datepicker").val();
+                $('#datepicker_btn').attr('href', url);
             });
-            $(".alert").show('highlight',400).delay(1000).fadeOut(300);
+        }
+        $(function () {
+            {% if subscription.id %}
+                $("#multi-data-picker").multiDatesPicker();
+                $.get("/get_list_of_dates/{{ subscription.id }}/{{ subscription.date_of_purchase|date:"d-m-Y" }}/01-06-2020/", function (data) {
+                    $("#multi-data-picker").multiDatesPicker({addDates: data.list_of_dates});
+                    load_data_picker();
+                })
+            {% else %}
+                load_data_picker();
+            {% endif %}
+            $(".alert").show('highlight', 400).delay(1000).fadeOut(300);
         });
     </script>
 </head>
