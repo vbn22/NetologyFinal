@@ -19,11 +19,9 @@ import json
 def calculate(request,id,date):
     result_calculate = 0
     subscription = Subscriptions.objects.get(pk=id)
-    for day in get_dates(id,subscription.date_of_purchase.replace(tzinfo=None),datetime.strptime(date,'%d-%m-%Y')):
-        result_calculate += sum(subscription.things.values_list('price',flat=True))
     return render(request, 'subscribe_description.html', {
         'date_calculate':date,
-        'result_calculate':result_calculate,
+        'result_calculate':subscription.calculate(datetime.strptime(date,'%d-%m-%Y')),
         'subscription': subscription,
         'period_type':[x[1] for x in Subscriptions.PERIOD_TYPE if x[0] == subscription.period_type]
     })

@@ -111,7 +111,7 @@
 <div class="header">
     <span style="position: absolute;left: 20px;"><a href="/">Главная</a></span>
     {% if user.is_authenticated %}
-        <span>{{ user }} (<b>{{ user.profile.wallet }}$</b>) <a class="btn btn-default" href="/logout/">Выйти</a></span>
+        <span>{{ user }} (<b>{{ user.profile.get_wallet }}$</b>) <a class="btn btn-default" href="/logout/">Выйти</a></span>
         <span><a class="btn btn-info" href="/subscribe/list">мои подписки</a></span>
 
     {% else %}

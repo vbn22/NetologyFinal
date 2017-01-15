@@ -1,13 +1,18 @@
 # -*- coding: utf-8 -*-
 from django.db import models
 from django.contrib.auth.models import User
-from django.db.models.signals import post_save
+from datetime import datetime
 from django.dispatch import receiver
+
 
 
 class Client(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE,blank=True,null=True,related_name='profile')
     wallet = models.FloatField(default=100.0, verbose_name='wallet')
+
+    @property
+    def get_wallet(self):
+        return self.wallet - sum([x.calculate(datetime.now()) for x in self.subscriptions.all()])
 
 
 class Things(models.Model):
@@ -35,3 +40,10 @@ class Subscriptions(models.Model):
     period_type = models.PositiveSmallIntegerField(choices=PERIOD_TYPE, default=0)
     days = models.ManyToManyField(Days,verbose_name='days',blank=True,null=True)
     status = models.BooleanField(default=True,verbose_name='Status')
+
+    def calculate(self,date):
+        from main import get_dates
+        result_calculate = 0
+        for day in get_dates(self.id,self.date_of_purchase.replace(tzinfo=None),date):
+            result_calculate += sum(self.things.values_list('price',flat=True))
+        return result_calculate
